@@ -36,9 +36,9 @@ class DQNAgent:
         self.memory.append((state, action, reward, next_state, done))
 
     def act(self, state):
-        if np.random.rand() <= self.epsilon:
-            return random.randrange(self.action_size)
-        act_values = self.model.predict(state)
+        if np.random.rand() <= self.epsilon: # np.random.rand() <- 0에서 1 사이에 실수를 랜덤으로 추출
+            return random.randrange(self.action_size) # action_size(2) 보다 작은 정수(0,1)을 랜덤으로 추출
+        act_values = self.model.predict(state) # 만들어진 keras 모델로 action을 예측
         return np.argmax(act_values[0])  # returns action
 
     def replay(self, batch_size):
@@ -47,7 +47,7 @@ class DQNAgent:
             target = reward
             if not done:
                 target = (reward + self.gamma *
-                          np.amax(self.model.predict(next_state)[0]))
+                          np.amax(self.model.predict(next_state)[0])) # amax ?? 
             target_f = self.model.predict(state)
             target_f[0][action] = target
             self.model.fit(state, target_f, epochs=1, verbose=0)
@@ -72,7 +72,7 @@ if __name__ == "__main__":
 
     for e in range(EPISODES):
         state = env.reset()
-        state = np.reshape(state, [1, state_size])
+        state = np.reshape(state, [1, state_size]) # 1차원 배열로 바꾸기?
         for time in range(500):
             # env.render()
             action = agent.act(state)
